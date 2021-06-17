@@ -74,7 +74,7 @@ typedef struct
 /* 00040000 */	unsigned int invert:1;
 /* 00080000 */	unsigned int vapedml:1;
 /* 00100000 */	unsigned int onedegree:1;
-/* 00200000 */	unsigned int battv:1;
+/* 00200000 */	unsigned int usbchghotoff:1;
 /* 00400000 */	unsigned int lsloff:1;
 /* 00800000 */	unsigned int logomid:1;
 
@@ -84,6 +84,7 @@ typedef struct
 /* 08000000 */	unsigned int dfmt2:1;
 /* 10000000 */	unsigned int pcurve:1;
 /* 20000000 */	unsigned int pwrbar:1;
+/* 40000000 */	unsigned int battv:1;
 
 
 // Do not exceed 32 bits;
@@ -192,7 +193,8 @@ typedef struct dfParams
 /* 00EA */	uint16_t	LoTemp;
 /* 00EC */	int8_t		Tsteps;
 /* 00EE */	uint8_t		Puffs;
-/* 00 */	uint8_t		ptcount;
+/* 00F1 */	uint8_t		ptcount;
+/* 00F2 */	int8_t		led;
 }
 dfParams_t;
 
@@ -386,6 +388,7 @@ extern dfStruct_t DataFlash;
 #define Tsteps			DFP(Tsteps)
 #define Puffs			DFP(puffs)
 #define ptcount			DFP(ptcount)
+#define led			DFP(led)
 
 
 #define dfFWVersion		DFI(FWVersion)

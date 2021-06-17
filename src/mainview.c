@@ -95,9 +95,11 @@ __myevic__ void DrawMode()
 				DrawImage( 59, 3, 0x07 );
 				break;
 			case 3:
-				DrawValue( 25, 2, dfTCRM[dfTCRIndex], 0, 0x0B, 3 );
+				if (EditModeTimer) {
+				DrawValue( 29, 2, dfTCRM[dfTCRIndex], 0, 0x0B, 3 );
 				DrawImage( 49, 2, 0xA8 );
 				DrawValue( 57, 2, dfTCRIndex + 1, 0, 0x0B, 1 );
+				}
 				break;
 			default:
 				break;
@@ -285,12 +287,12 @@ __myevic__ void DrawAPTLine( int line )
 
 		case 3:	// Vape Velocity
 		{
-			uint32_t vv, t;
+			/*uint32_t vv, t;
 			// Elasped seconds since last VV reset
 			t = RTCGetEpoch( 0 );
 			t -= RTCReadRegister( RTCSPARE_VV_BASE );
-
-			vv = dfVVRatio * ( MilliJoules / 1000 ) / 1000;
+			vv=0;
+			//vv = dfVVRatio * ( MilliJoules / 1000 ) / 1000;
 			vv /= 10;
 			if ( vv > 9999 ) vv = 9999;
 			if ( dfStatus.vapedml )
@@ -305,7 +307,7 @@ __myevic__ void DrawAPTLine( int line )
 				DrawString( String_mld, 42, line+2 );
 				DrawValueRight( 40, line, vv, 2, 0x1F, 0 );
 			}
-			break;
+			break;*/
 		}
 
 		case 4:	// Atomizer voltage
@@ -376,10 +378,17 @@ __myevic__ void ShowFireDuration( int line )
 	DrawFillRect( 0, line, 63, line+15, 1 );
 	DrawFillRect( 1, line+1, 62, line+14, 0 );
 	//x = ( FireDuration > dfProtec *10 / 2 ) ? 5 : 38;
-	if (gFlags.warmup) DrawString( String_WarmUp, 14, line+4 );
+	if (gFlags.warmup && ((FireDuration/2)*2 == FireDuration)) DrawString( String_WarmUp, 14, line+4 );
 	else if (gFlags.eco) DrawString( String_eco, 22, line+4 );
+
 	else if (ptcount>0) {DrawString( String_Tstep, 4, line+4 );DrawValue( 34, line+4, ptcount, 0, 0xB, 0 );DrawString( String_of, 42, line+4 );DrawValue( 54, line+4, Tsteps, 0, 0xB, 0 );}
-	else DrawString( String_Cruise, 16, line+4 );
+
+	else if (!gFlags.warmup && dfMode==3 && gFlags.autopuff)DrawString( String_Cruise, 16, line+4 );
+	else if (!gFlags.warmup && dfMode==3 && !gFlags.autopuff)DrawString( String_PUFF_s, 20, line+4 );
+
+	else if (!gFlags.warmup && dfMode==4 && gFlags.autopuff)DrawString( String_Surf, 20, line+4 );
+	else if (!gFlags.warmup && dfMode==4 && !gFlags.autopuff)DrawString( String_PUFF_s, 20, line+4 );
+
 	//DrawValue( x, line+4, FireDuration/10, 0, 0xB, 0 );
 	//DrawImage( x + 15 + 6 * ( FireDuration > 99 ), line+4, 0x94 );
 	InvertRect( 2, line+2, 2 + 59 * FireDuration / dfProtec / 50, line+13 );
@@ -419,12 +428,50 @@ __myevic__ void DrawInfoLines()
 				{
 					DrawPwrLine( AtoPower( AtoVolts ), dfStatus.pwrbar, 52 );
 				}
-				if (gFlags.autopuff /*&& !gFlags.warmup*/) ShowFireDuration( 71 );
+				ShowFireDuration( 71 );
+				if (gFlags.autopuff /*&& !gFlags.warmup*/)
+				{ 
+
+
+
+				int line=90;
+				DrawString( String_TEMP_s, 0, line+2 );
+
+				int t = dfTemp;
+				//int t = dfIsCelsius ? dfTemp : CelsiusToF( dfTemp );
+
+				DrawValue( t>99?31:39, line, t, 0, 0x1F, t>99?3:2 );
+				DrawImage( 56, line+2, dfIsCelsius ? 0xC9 : 0xC8 );
+				
+
+				}
+				
 				break;
+
+				
 			case 4:
 			case 5:
 			{
 				ShowFireDuration( 49 );
+				if (!gFlags.autopuff) DrawCoilLine( 71 ); else {
+				int line = 71;
+				DrawString( String_PUFF_s, 0, line+2 );
+				//DrawValueRight( 34, line+2, FireDuration / 36000, 0, 0x0B, 0 );
+				//DrawImage( 34, line+2, 0xD7 );
+				DrawValue( 37, line+2, FireDuration / 600 % 60, 0, 0x0B, 2 );
+				DrawImage( 49, line+2, 0xD7 );
+				DrawValue( 52, line+2, FireDuration / 10 % 60, 0, 0x0B, 2 );
+				line = 90;
+				DrawString( String_Prot, 0, line+2 );
+				//DrawValueRight( 34, line+2, FireDuration / 36000, 0, 0x0B, 0 );
+				//DrawImage( 34, line+2, 0xD7 );
+				DrawValue( 37, line+2, dfProtec*50 / 600 % 60, 0, 0x0B, 2 );
+				DrawImage( 49, line+2, 0xD7 );
+				DrawValue( 52, line+2, dfProtec*50 / 10 % 60, 0, 0x0B, 2 );
+				
+				}
+
+
 				break;
 			}
 			default:
@@ -447,9 +494,14 @@ __myevic__ void DrawInfoLines()
 				{
 					DrawPwrLine( dfTCPower, 0, 52 );
 				}
+				DrawString( String_w2cru, 0, 71+2 );
+				DrawValue( 22, 71+2, w2c, 0, 0xB, 0 );
+				DrawString( String_eco, 38, 71+2 );
+				DrawValue( 58, 71+2, ecolvl, 0, 0xB, 0 );
 				break;
 			case 4:
 				DrawVoltsLine( dfVWVolts, 52 );
+				DrawCoilLine( 71 );
 				break;
 			case 5:
 				DrawVoltsLine( BypassVolts, 52 );
@@ -459,18 +511,9 @@ __myevic__ void DrawInfoLines()
 		}
 	}
 
-	if (!gFlags.autopuff) DrawCoilLine( 71 );
+	
 	//if (gFlags.warmup) DrawCoilLine( 71 );
-	if (!gFlags.autopuff) DrawAPTLine( 90 ); else {
-			int line=90;
-			DrawString( String_TEMP_s, 0, line+2 );
-
-			int t = dfTemp;
-			//int t = dfIsCelsius ? dfTemp : CelsiusToF( dfTemp );
-
-			DrawValue( t>99?31:39, line, t, 0, 0x1F, t>99?3:2 );
-			DrawImage( 56, line+2, dfIsCelsius ? 0xC9 : 0xC8 );
-	}
+	if (!gFlags.autopuff) DrawAPTLine( 90 ); 
 }
 
 

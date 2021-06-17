@@ -44,6 +44,7 @@ enum
 {
 	BOX_VTCMINI,
 	BOX_VTWOMINI,
+        BOX_PRIMOMINI,
 	BOX_VTWO,
 	BOX_PRESA75W,
 	BOX_WRX75TC,
@@ -58,11 +59,25 @@ enum
 	BOX_RX200S,
 	BOX_RX23,
 	BOX_RX300,
-	BOX_RXMINI
+	BOX_RXMINI,
+        BOX_PRIMO1,
+        BOX_PRIMO2,
+        BOX_PREDATOR,    
+        BOX_PRIMOSE,   
+        BOX_GEN3,
+        BOX_RX2,
+        BOX_SINP80,
+        BOX_SINFJ200,
+        BOX_INVOKE,
+        BOX_RX217,
+        BOX_GEN2,
+        BOX_IKU200,
+        BOX_FIT
 };
 
 #define ISVTCMINI		(BoxModel==BOX_VTCMINI)
 #define ISVTWOMINI		(BoxModel==BOX_VTWOMINI)
+#define ISPRIMOMINI		(BoxModel==BOX_PRIMOMINI)
 #define ISVTWO			(BoxModel==BOX_VTWO)
 #define ISPRESA75W		(BoxModel==BOX_PRESA75W)
 #define ISPRESA100W		(BoxModel==BOX_PRESA100W)
@@ -78,6 +93,19 @@ enum
 #define ISRX23			(BoxModel==BOX_RX23)
 #define ISRX300			(BoxModel==BOX_RX300)
 #define ISRXMINI		(BoxModel==BOX_RXMINI)
+#define ISPRIMO1		(BoxModel==BOX_PRIMO1)
+#define ISPRIMO2		(BoxModel==BOX_PRIMO2)
+#define ISPREDATOR		(BoxModel==BOX_PREDATOR)
+#define ISPRIMOSE		(BoxModel==BOX_PRIMOSE)
+#define ISGEN3                  (BoxModel==BOX_GEN3)
+#define ISRX2                   (BoxModel==BOX_RX2)
+#define ISSINP80                (BoxModel==BOX_SINP80)
+#define ISSINFJ200              (BoxModel==BOX_SINFJ200)
+#define ISINVOKE                (BoxModel==BOX_INVOKE)
+#define ISRX217                 (BoxModel==BOX_RX217)
+#define ISGEN2                  (BoxModel==BOX_GEN2)
+#define ISIKU200                (BoxModel==BOX_IKU200)
+#define ISFIT			(BoxModel==BOX_FIT)
 
 
 //=========================================================================
@@ -148,11 +176,10 @@ typedef struct
 /* 00200000 */	int fading:1;
 /* 00400000 */	int led_on:1;
 /* 00800000 */	int splash:1;
-
-/* 01000000 */	int autopuff:1;
-/* 02000000 */	int warmup:1;
-/* 04000000 */	int eco:1;
-/* 08000000 */	int animpwrbar:1;
+				int autopuff:1;
+				int warmup:1;
+				int eco:1;
+				int animpwrbar:1;
 }
 
 gFlags_t;

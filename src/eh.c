@@ -550,18 +550,21 @@ __myevic__ void EventHandler()
 				GPIO_SetMode( PD, GPIO_PIN_PIN1_Msk, GPIO_MODE_OUTPUT );
 				PD1 = 0;
 			}
-			else if ( !ISCUBOID && ! ISCUBO200 && !ISRX200S && !ISRX23 && !ISRX300 )
+			else if ( !ISCUBOID && ! ISCUBO200 && !ISRX200S && !ISRX23 
+                                && !ISRX300 && !ISPRIMO1 && !ISPRIMO2 && !ISPREDATOR 
+                                && !ISGEN3 && !ISRX2 && !ISINVOKE 
+&& !ISSINFJ200 && !ISRX217 && !ISGEN2 && !ISIKU200 )
 			{
 				GPIO_SetMode( PD, GPIO_PIN_PIN7_Msk, GPIO_MODE_OUTPUT );
 				PD7 = 0;
 			}
 
-			if ( ISEGRIPII || ISEVICAIO )
+			if ( ISEGRIPII || ISEVICAIO || ISSINP80 || ISSINFJ200 )
 			{
 				if ( !dfStealthOn )
 				{
 					LEDTimer = 0;
-					gFlags.led_on = 1;
+					if (led) gFlags.led_on = 1;
 				}
 			}
 
@@ -583,12 +586,13 @@ __myevic__ void EventHandler()
 					break;
 
 				case 3:
-					TCR = 185;
+					TCR = 120;
 					break;
 
 				case 4:
 					if ( dfMode == 3 )
 					{
+						dfTCRM[0]=185;
 						TCR = dfTCRM[dfTCRIndex];
 					}
 					else if ( dfMode < 3 )
@@ -812,7 +816,7 @@ __myevic__ void EventHandler()
 		case 24:	// 10s Fire protection
 			if ( AtoError )
 				return;
-			if ( FireDuration >= dfProtec *50ul && !gFlags.autopuff)
+			if ( FireDuration >= dfProtec *50ul /*&& !gFlags.autopuff*/)
 			{
 				gFlags.refresh_display = 1;
 				Screen = 23;
@@ -987,11 +991,19 @@ __myevic__ void EventHandler()
 			ChargeStatus = 1;
 			if ( NumBatteries > 1 )
 			{
-				USBMaxLoad = 2;
+                            if ( ISPRIMO2 || ISPREDATOR || ISGEN3 || ISRX2 || ISINVOKE 
+                                    || ISSINFJ200 || ISRX217 || ISGEN2 || ISIKU200 )
+                            {
+                                USBMaxLoad = 3; //2A
+                            } 
+                            else 
+                            {
+                                USBMaxLoad = 2; //1.5A
+                            }				
 			}
 			else
 			{
-				USBMaxLoad = 1;
+				USBMaxLoad = 1; //1A
 			}
 			gFlags.low_battery = 0;
 			gFlags.usb_attached = 1;

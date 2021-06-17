@@ -171,11 +171,19 @@ __myevic__ void KeyRepeat()
 
 		if ( !PD2 )
 		{
-			Event = 2;
+			if (dfStatus.flipped == 1) { 
+				if ( ISSINP80 | ISGEN2 ) Event = 2; else Event = 3; 
+					} else { 
+						if ( ISSINP80 | ISGEN2 ) Event = 3; else Event = 2;
+						}
 		}
 		else if ( !PD3 )
 		{
-			Event = 3;
+			if (dfStatus.flipped == 1) { 
+				if ( ISSINP80 | ISGEN2 ) Event = 3; else Event = 2;
+				} else {
+					if ( ISSINP80 | ISGEN2 ) Event = 2; else Event = 3;
+					}
 		}
 	}
 }
@@ -194,7 +202,7 @@ __myevic__ void GetUserInput()
 			{
 				Event = 24;	// 10s protection
 			}
-		if ( !PE0 && gFlags.autopuff) AutoPuffTimer = 0;
+		if ( !PE0 && gFlags.autopuff) {AutoPuffTimer = 0; StopFire();}
 
 		if (( LastInputs == 5 ) || ( LastInputs == 6 ))
 			return;
@@ -216,6 +224,17 @@ __myevic__ void GetUserInput()
 			return;
 		}
 
+		/*if ( gFlags.autopuff )
+		{
+			if ( LastInputs == 1 )
+			{
+				StopFire();
+			}
+			gFlags.user_idle = 1;
+			LastInputs = -1;
+			KeyPressTime = 0;
+			return;
+		}*/
 		if ( !FireClickTimer && FireClicksEvent )
 		{
 			Event = FireClicksEvent;
@@ -225,30 +244,36 @@ __myevic__ void GetUserInput()
 		if ( !dfStatus.off || IsMenuScreen() || gFlags.autopuff)
 		{
 			if ( !PD2 ) {
-				UserInputs = 2;
-			 	if (gFlags.warmup) {
-					if (!dfStatus.onedegree) {
-						dfTemp=dfIsCelsius ? dfoTemp : (CelsiusToF( dfoTemp )+9)/10*10; // round up, due to round down in celsiustoF()
-					} else { dfTemp=dfIsCelsius ? dfoTemp : (CelsiusToF( dfoTemp )+4)/5*5; }
+				if (dfStatus.flipped == 1) { 
+					if (ISSINP80| ISGEN2 ) UserInputs = 2;  else UserInputs = 3;
+					} else { 
+						if (ISSINP80| ISGEN2 ) UserInputs=3; else UserInputs = 2;}
+
 				gFlags.warmup=0;
-				}
+				LEDRed=0;
+				LEDGreen=1;
+				LEDBlue=0;
+				
 				//gFlags.autopuff=0;
 				//StopFire();
 			}
 			if ( !PD3 ) {
-				UserInputs = 3;
-			 	if (gFlags.warmup) {
-					if (!dfStatus.onedegree) {
-						dfTemp=dfIsCelsius ? dfoTemp : (CelsiusToF( dfoTemp )+9)/10*10; // round up, due to round down in celsiustoF()
-					} else { dfTemp=dfIsCelsius ? dfoTemp : (CelsiusToF( dfoTemp )+4)/5*5; }
+				if (dfStatus.flipped == 1) {
+					if (ISSINP80| ISGEN2 ) UserInputs = 3; else UserInputs = 2;
+					} else { 
+						if (ISSINP80| ISGEN2 ) UserInputs=2;	else UserInputs = 3;}		 	
+
 				gFlags.warmup=0;
+				LEDRed=0;
+				LEDGreen=1;
+				LEDBlue=0;
 				}
 				//gFlags.autopuff=0;
 				//gFlags.warmup=0;
 				//StopFire();
-			}
+			
 		}
-
+		
 		if ( !PD2 && !PD3 ) UserInputs = 4;
 		if ( !PE0 && !PD2 ) UserInputs = 5;
 		if ( !PE0 && !PD3 ) UserInputs = 6;
@@ -295,7 +320,9 @@ __myevic__ void GetUserInput()
 					}
 				}
 			}
-			else if ( !ISCUBOID && !ISCUBO200 && !ISRX200S && !ISRX23 && !ISRX300 )
+			else if ( !ISCUBOID && !ISCUBO200 && !ISRX200S && !ISRX23 && !ISRX300 && !ISPRIMO1 
+                                && !ISPRIMO2 && !ISPREDATOR && !ISGEN3 && !ISRX2 
+&& !ISINVOKE && !ISSINFJ200 && !ISRX217 && !ISGEN2 && !ISIKU200 )
 			{
 				if ( !PD7 && !gFlags.battery_charging )
 				{
@@ -379,7 +406,7 @@ __myevic__ void GetUserInput()
 
 					if ( Screen != 1 || !EditModeTimer || EditItemIndex != 4 )
 					{
-						Event = 1;	// fire
+						Event = 1;	// fire			
 					}
 					break;
 
@@ -457,6 +484,12 @@ __myevic__ void GetUserInput()
 		}
 		else if ( UserInputs == 2 )
 		{
+
+			 	if (gFlags.warmup) {
+					if (!dfStatus.onedegree) {
+						dfTemp=dfIsCelsius ? dfoTemp : (CelsiusToF( dfoTemp )+9)/10*10; // round up, due to round down in celsiustoF()
+					} else { dfTemp=dfIsCelsius ? dfoTemp : (CelsiusToF( dfoTemp )+4)/5*5; }
+				}	
 			if ( Screen == 60 )
 			{
 				if ( dfScreenSaver == SSAVER_3D )
@@ -481,7 +514,7 @@ __myevic__ void GetUserInput()
 					dfoTemp=dfTemp;
 					if ( dfTemp > 260 )
 					{
-						dfTemp = ( KeyTicks < 5 ) ? 150 : 260;
+						dfTemp = ( KeyTicks < 5 ) ? 100 : 260;
 					}
 				}
 				else
@@ -490,7 +523,7 @@ __myevic__ void GetUserInput()
 					dfoTemp=dfTemp;
 					if ( dfTemp > 500 )
 					{
-						dfTemp = ( KeyTicks < 5 ) ? 300 : 500;
+						dfTemp = ( KeyTicks < 5 ) ? 210 : 500;
 					}
 				}
 				}
@@ -505,6 +538,12 @@ __myevic__ void GetUserInput()
 		}
 		else if ( UserInputs == 3 )
 		{
+
+				if (gFlags.warmup) {
+					if (!dfStatus.onedegree) {
+						dfTemp=dfIsCelsius ? dfoTemp : (CelsiusToF( dfoTemp )+9)/10*10; // round up, due to round down in celsiustoF()
+					} else { dfTemp=dfIsCelsius ? dfoTemp : (CelsiusToF( dfoTemp )+4)/5*5; }
+				}
 			if ( Screen == 60 )
 			{
 				if ( dfScreenSaver == SSAVER_3D )
@@ -527,18 +566,18 @@ __myevic__ void GetUserInput()
 				{
 					dfTemp -= dfStatus.onedegree ? 1 : 5;
 					dfoTemp=dfTemp;
-					if ( dfTemp < 150 )
+					if ( dfTemp < 100 )
 					{
-						dfTemp = ( KeyTicks < 5 ) ? 260 : 150;
+						dfTemp = ( KeyTicks < 5 ) ? 260 : 100;
 					}
 				}
 				else
 				{
 					dfTemp -= dfStatus.onedegree ? 5 : 10;
 					dfoTemp=dfTemp;
-					if ( dfTemp < 300 )
+					if ( dfTemp < 210 )
 					{
-						dfTemp = ( KeyTicks < 5 ) ? 500 : 300;
+						dfTemp = ( KeyTicks < 5 ) ? 500 : 210;
 					}
 				}
 				}
@@ -1310,7 +1349,7 @@ __myevic__ int CustomEvents()
 			time_t t;
 			RTCGetEpoch( &t );
 			t = t - ( t% 86400 );
-			MilliJoules = 0;
+			//MilliJoules = 0;
 			RTCWriteRegister( RTCSPARE_VV_BASE, t );
 			EditModeTimer = 1000;
 			gFlags.refresh_display = 1;
@@ -1327,9 +1366,9 @@ __myevic__ int CustomEvents()
 		case EVENT_AUTO_PUFF:
 			if ( AutoPuffTimer > 0 )
 				MainView();
-			else
+			else {
 				StopFire();
-				Event = 24;
+				Event = 24;}
 			break;
 
 		case EVENT_CLK_ADJUST:
@@ -1364,18 +1403,22 @@ __myevic__ int CustomEvents()
 			break;
 
 		case EVENT_CRUISE:
+					if (dfMode == 4 && dfPower > 200) dfPower = 200;
+					if (dfMode==3 || dfMode==4 ) {
 					AutoPuffTimer=dfProtec*500ul;
- 					Event = EVENT_AUTO_PUFF;
+					Event = EVENT_AUTO_PUFF;
 					gFlags.autopuff=1;
 					ptcount=0;
 					if ( Screen != 1 || !EditModeTimer || EditItemIndex != 4 )
 					{
 						Event = 1;	// fire
 					}
+					}
 					gFlags.refresh_display = 1;
 			break;
 
 		case EVENT_WARMUP:
+					if (dfMode==3) {
 					AutoPuffTimer=dfProtec*500ul;
  					Event = EVENT_AUTO_PUFF;
 					gFlags.autopuff=1;
@@ -1385,10 +1428,12 @@ __myevic__ int CustomEvents()
 					{
 						Event = 1;	// fire
 					}
+					}
 					gFlags.refresh_display = 1;
 			break;
 
 		case EVENT_TSTEP:
+					if (dfMode==3) {
 					AutoPuffTimer=dfProtec*500ul;
  					Event = EVENT_AUTO_PUFF;
 					gFlags.autopuff=1;
@@ -1400,6 +1445,7 @@ __myevic__ int CustomEvents()
 					if ( Screen != 1 || !EditModeTimer || EditItemIndex != 4 )
 					{
 						Event = 1;	// fire
+					}
 					}
 					gFlags.refresh_display = 1;
 			break;

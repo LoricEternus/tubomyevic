@@ -310,6 +310,7 @@ extern const uint8_t String_LoTemp[];
 extern const uint8_t String_Tstep[];
 extern const uint8_t String_Puffs[];
 extern const uint8_t String_of[];
+extern const uint8_t String_Surf[];
 
 
 //==============================================================================

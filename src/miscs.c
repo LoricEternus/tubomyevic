@@ -825,9 +825,7 @@ __myevic__ void AnimPwrBar( int first )
 		tscaler = 0;
 	}
 
-	// Zero the bar when not firing, because Screen 2 remains visible
-	// for ~1 second after firing stops.
-	const int pwr = gFlags.firing ? AtoPower( AtoVolts ) : 0;
+	const int pwr = AtoPower( AtoVolts );
 	const int pwrmax = dfTCPower;
 
 	int bar = ( pwr * WIDTH / pwrmax );
@@ -855,47 +853,103 @@ volatile uint8_t LEDTimer;
 
 __myevic__ void LEDGetColor()
 {
-	LEDBlue = dfLEDColor & 0x1F;
-	LEDGreen = ( dfLEDColor & ( 0x1F << 5 ) ) >> 5;
-	LEDRed = ( dfLEDColor & ( 0x1F << 10 ) ) >> 10;
+	LEDBlue = dfLEDColor & 0x1F; // 0000000000011111 dfLEDColor
+	LEDGreen = ( dfLEDColor & ( 0x1F << 5 ) ) >> 5; //000001111100000
+	LEDRed = ( dfLEDColor & ( 0x1F << 10 ) ) >> 10; //111110000000000
 }
 
 __myevic__ void LEDSetColor()
 {
 	dfLEDColor = ( LEDRed << 10 ) | ( LEDGreen << 5 ) | LEDBlue;
+        if ( ISEGRIPII || ISEVICAIO || ISSINFJ200 || ISSINP80 ) 
+        {
+            gFlags.led_on = 1;
+            LEDTimer = 10;
+        }
 }
 
-__myevic__ void LEDWhite()
-{
-	LEDBlue = 25;
-	LEDGreen = 25;
-	LEDRed = 25;
-}
+//__myevic__ void LEDWhite()
+//{
+//	LEDBlue = 25;
+//	LEDGreen = 25;
+//	LEDRed = 25;
+//}
 
 __myevic__ void LEDOff()
 {
-	gFlags.led_on = 0;
-	PB->DOUT &= ~0x38;
+    gFlags.led_on = 0;
+
+    if ( ISSINFJ200 )
+    {
+        PB7 = 0;
+    }
+    else if ( ISEGRIPII || ISEVICAIO )
+    {
+	PB->DOUT &= ~(7<<3); //~0x38; //low
+    }
+    else if ( ISSINP80 )
+    {
+	PD->DOUT &= ~3;
+    }
 }
 
 // LED PWM
 // Called by Timer 1 @ 5kHz
 __myevic__ void LEDControl()
 {
-	uint32_t phase = TMR1Counter % 25;
+    if ( !gFlags.led_on ) 
+    {
+        LEDOff();
+        return;
+    }
+        
+    uint32_t phase = TMR1Counter % 25;
+    
+    if ( ISSINFJ200 )
+    {
+        //GPIO_SetMode( PD, GPIO_PIN_PIN1_Msk, GPIO_MODE_OUTPUT ); 
+        PB7 = ( phase < LEDGreen ); //1;
+    }
+    else if ( ISEGRIPII || ISEVICAIO )
+    {	
 	PB3 = ( phase < LEDBlue );
 	PB4 = ( phase < LEDRed );
 	PB5 = ( phase < LEDGreen );
+    }
+    else if ( ISSINP80 )
+    { 
+        // LEDBlue = Yellow
+        // green 0 1; red 1 0;
+        
+        if ( LEDRed ) //R
+        {
+            PD0 = 1; PD1 = 0;
+        }
+        else if ( LEDGreen ) //G
+        {
+            PD0 = 0; PD1 = 1;
+        }
+        else if ( LEDBlue ) //Y
+        {
+            PD->DOUT |= 3; //PD0 = 1; PD1 = 1;
+        }
+        else //off
+        {
+            PD->DOUT &= ~3;
+        }               
+    }
+    // no else
 }
 
 __myevic__ void LEDTimerTick()
 {
+    //10Hz
+    
 	if ( LEDTimer )
-	{
+	{                   
 		if ( !--LEDTimer )
 		{
 			LEDOff();
 		}
 	}
 }
-

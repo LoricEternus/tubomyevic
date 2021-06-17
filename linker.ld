@@ -1,6 +1,6 @@
 /* Memory regions */
 MEMORY {
-	ROM (rx)  : ORIGIN = 0x00000000, LENGTH = 100K
+	ROM (rx)  : ORIGIN = 0x00000000, LENGTH = 103K
 	RAM (rwx) : ORIGIN = 0x20000000, LENGTH =  32K
 }
 

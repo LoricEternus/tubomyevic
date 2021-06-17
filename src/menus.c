@@ -215,7 +215,7 @@ __myevic__ void VapingMenuIDraw( int it, int line, int sel )
 {
 	switch ( it )
 	{
-		case 0:	// Protec
+		case 1:	// Protec
 			DrawFillRect( 38, line, 63, line+12, 0 );
 			DrawImage( 58, line+2, 0x94 );
 			DrawValueRight( 56, line+2, dfProtec*5, 0, 0x0B, 0 );
@@ -228,7 +228,7 @@ __myevic__ void VapingMenuIDraw( int it, int line, int sel )
 //			DrawString( dfStatus.vapedml ? String_ml : String_mld, 43, line+2 );
 //			break;
 
-		case 4: // warmup2cruise
+		case 0: // warmup2cruise
 			DrawFillRect( 39, line, 63, line+12, 0 );
 			DrawValueRight( 61, line+2, w2c, 0, 0x0B, 0 );
 			if ( sel && gFlags.edit_value )
@@ -242,21 +242,21 @@ __myevic__ void VapingMenuIDraw( int it, int line, int sel )
 				InvertRect( 0, line, 63, line+12 );
 			break;
 
-		case 1: // tsteps
+		case 2: // tsteps
 			DrawFillRect( 39, line, 63, line+12, 0 );
 			DrawValueRight( 61, line+2, Tsteps, 0, 0x0B, 0 );
 			if ( sel && gFlags.edit_value )
 				InvertRect( 0, line, 63, line+12 );
 			break;
 
-		case 2: // lotemp
+		case 3: // lotemp
 			DrawFillRect( 39, line, 63, line+12, 0 );
 			DrawValueRight( 61, line+2, LoTemp, 0, 0x0B, 0 );
 			if ( sel && gFlags.edit_value )
 				InvertRect( 0, line, 63, line+12 );
 			break;
 
-		case 3: // hitemp
+		case 4: // hitemp
 			DrawFillRect( 39, line, 63, line+12, 0 );
 			DrawValueRight( 61, line+2, HiTemp, 0, 0x0B, 0 );
 			if ( sel && gFlags.edit_value )
@@ -271,7 +271,7 @@ __myevic__ void VapingMenuOnClick()
 {
 	switch ( CurrentMenuItem )
 	{
-		case 0:	// Protec
+		case 1:	// Protec
 			gFlags.edit_value ^= 1;
 			break;
 
@@ -280,7 +280,7 @@ __myevic__ void VapingMenuOnClick()
 //			UpdateDFTimer = 50;
 //			break;
 
-		case 4: // w2c
+		case 0: // w2c
 			gFlags.edit_value ^= 1;
 			break;
 
@@ -288,15 +288,15 @@ __myevic__ void VapingMenuOnClick()
 			gFlags.edit_value ^= 1;
 			break;
 
-		case 1: // tsteps
+		case 2: // tsteps
 			gFlags.edit_value ^= 1;
 			break;
 
-		case 2: // lotemp
+		case 3: // lotemp
 			gFlags.edit_value ^= 1;
 			break;
 
-		case 3: // hitemp
+		case 4: // hitemp
 			gFlags.edit_value ^= 1;
 			break;
 
@@ -318,7 +318,7 @@ __myevic__ int VapingMenuOnEvent( int event )
 		case 2:	// Plus
 			switch ( CurrentMenuItem )
 			{
-				case 0: // Protec
+				case 1: // Protec
 					if ( ++dfProtec > FIRE_PROTEC_MAX )
 					{
 						if ( KeyTicks < 5 ) dfProtec = FIRE_PROTEC_MIN;
@@ -327,7 +327,7 @@ __myevic__ int VapingMenuOnEvent( int event )
 					vret = 1;
 					break;
 
-				case 4: // w2c
+				case 0: // w2c
 					if ( ++w2c > 2 )
 					{
 						if ( KeyTicks < 5 ) w2c = 0;
@@ -345,7 +345,7 @@ __myevic__ int VapingMenuOnEvent( int event )
 					vret = 1;
 					break;
 
-				case 1: // tsteps
+				case 2: // tsteps
 					if ( ++Tsteps > 7 )
 					{
 						if ( KeyTicks < 5 ) Tsteps = 2;
@@ -354,7 +354,7 @@ __myevic__ int VapingMenuOnEvent( int event )
 					vret = 1;
 					break;
 
-				case 2: // lotemp
+				case 3: // lotemp
 					if (dfIsCelsius){
 					if ( ++LoTemp > 260 )
 					{
@@ -371,7 +371,7 @@ __myevic__ int VapingMenuOnEvent( int event )
 					vret = 1;
 					break;
 
-				case 3: // HiTemp
+				case 4: // HiTemp
 					if (dfIsCelsius){
 					if ( ++HiTemp > 260 )
 					{
@@ -393,7 +393,7 @@ __myevic__ int VapingMenuOnEvent( int event )
 		case 3:	// Minus
 			switch ( CurrentMenuItem )
 			{
-				case 0: // Protec
+				case 1: // Protec
 					if ( --dfProtec < FIRE_PROTEC_MIN )
 					{
 						if ( KeyTicks < 5 ) dfProtec = FIRE_PROTEC_MAX;
@@ -402,7 +402,7 @@ __myevic__ int VapingMenuOnEvent( int event )
 					vret = 1;
 					break;
 
-				case 4: // w2cru
+				case 0: // w2cru
 					if ( --w2c < 0 )
 					{
 						if ( KeyTicks < 5 ) w2c = 2;
@@ -420,7 +420,7 @@ __myevic__ int VapingMenuOnEvent( int event )
 					vret = 1;
 					break;
 
-				case 1: // tsteps
+				case 2: // tsteps
 					if ( --Tsteps < 2 )
 					{
 						if ( KeyTicks < 5 ) Tsteps = 7;
@@ -429,7 +429,7 @@ __myevic__ int VapingMenuOnEvent( int event )
 					vret = 1;
 					break;
 
-				case 2: // lotemp
+				case 3: // lotemp
 					if (dfIsCelsius){
 					if ( --LoTemp < 100 )
 					{
@@ -446,7 +446,7 @@ __myevic__ int VapingMenuOnEvent( int event )
 					vret = 1;
 					break;
 
-				case 3: // hitemp
+				case 4: // hitemp
 					if (dfIsCelsius){
 					if ( --HiTemp < 100 )
 					{
@@ -611,38 +611,42 @@ __myevic__ void IFMenuIDraw( int it, int line, int sel )
 
 	switch ( it )
 	{
-		case 0:	// 1Watt
+		case 1:	// 1Watt
 			DrawString( dfStatus.onewatt ? String_On : String_Off, 44, line+2 );
 			break;
 
-		case 1:	// 1C5F
+		case 2:	// 1C5F
 			DrawString( dfStatus.onedegree ? String_On : String_Off, 44, line+2 );
 			break;
 
-		case 2:	// Wake -+
+		case 3:	// Wake -+
 			DrawString( dfStatus.wakeonpm ? String_On : String_Off, 44, line+2 );
 			break;
 
-		case 3:	// Font
+		case 4:	// Font
 			DrawImage( 44, line+2, dfStatus.font ? 0x9D : 0x9C );
 			break;
 
-		case 4:	// Temp
+		case 5:	// Temp
 			DrawImage( 44, line+2, dfIsCelsius ? 0xC9 : 0xC8 );
 			break;
 
-		case 5:	// TDom
+		case 6:	// TDom
 			DrawString( dfStatus.priopwr ? String_On : String_Off, 44, line+2 );
 			break;
 
-		case 6: // PwrBar
+		case 7: // Led
+				DrawString( led ? String_On : String_Off, 44, line+2 );
+			break;
+			
+		case 8: // PwrBar
 			if ( dfStatus.priopwr ) {
 				// PwrBar doesn't work in PPwr mode; draw a lock icon.
 				DrawImage( 44, line+2, 0xC3 );
 			} else {
 				DrawString( dfStatus.pwrbar ? String_On : String_Off, 44, line+2 );
 			}
-			break;
+			break;			
 
 		default:
 			break;
@@ -654,7 +658,7 @@ __myevic__ void IFMenuOnClick()
 {
 	switch ( CurrentMenuItem )
 	{
-		case 0:	// 1Watt
+		case 1:	// 1Watt
 			dfStatus.onewatt ^= 1;
 			if ( dfStatus.onewatt )
 			{
@@ -667,7 +671,7 @@ __myevic__ void IFMenuOnClick()
 			}
 			break;
 
-		case 1:	// 1C5F
+		case 2:	// 1C5F
 			dfStatus.onedegree ^= 1;
 			if ( !dfStatus.onedegree )
 			{
@@ -675,16 +679,16 @@ __myevic__ void IFMenuOnClick()
 			}
 			break;
 
-		case 2:	// Wake -+
+		case 3:	// Wake -+
 			dfStatus.wakeonpm ^= 1;
 			break;
 
-		case 3:	// Font
+		case 4:	// Font
 			dfStatus.font ^= 1;
 			DisplaySetFont();
 			break;
 
-		case 4:	// Temp
+		case 5:	// Temp
 			dfIsCelsius ^= 1;
 			if ( dfIsCelsius )
 			{
@@ -715,13 +719,17 @@ __myevic__ void IFMenuOnClick()
 			}
 			break;
 
-		case 5:	// TDom
+		case 6:	// TDom
 			dfStatus.priopwr ^= 1;
 			break;
 
-		case 6:	// PwrBar
-			if ( !dfStatus.priopwr ) dfStatus.pwrbar ^= 1;
+		case 7:	// led
+			led ^= 1;
 			break;
+			
+		case 8:	// PwrBar
+			if ( !dfStatus.priopwr ) dfStatus.pwrbar ^= 1;
+			break;			
 
 		default: // Exit
 			UpdateDataFlash();
@@ -1593,6 +1601,7 @@ __myevic__ void DrawTCRP( int x, int y, int v, uint8_t dp, uint8_t z, uint8_t nd
 
 __myevic__ int TCRSetOnEvent( int event )
 {
+	dfTCRM[0]=185;
 	Event = EVENT_MODE_CHANGE;
 	return 0;
 }
@@ -1609,7 +1618,7 @@ __myevic__ void DrawLedColor( int x, int y, int v, uint8_t dp, uint8_t z, uint8_
 __myevic__ void LedMenuEnter()
 {
 	LEDGetColor();
-	if ( ISEGRIPII || ISEVICAIO ) gFlags.led_on = 1;
+	if ( ISEGRIPII || ISEVICAIO || ISSINP80 || ISSINFJ200 ) gFlags.led_on = 1;
 }
 
 __myevic__ int LedMenuEvent( int event )
@@ -1788,7 +1797,7 @@ const mvaluedesc_t TCRMDesc =
 	0,
 	0x0B,
 	1,
-	0, 120
+	0, 185
 };
 
 const mdata_t TCRNIData =
@@ -2250,16 +2259,17 @@ const menu_t IFMenu =
 	0,
 	IFMenuOnClick+1,
 	0,
-	9,
+	10,
 	{
+		{ String_Clicks, &ClicksMenu, 0, MACTION_SUBMENU },
 		{ String_1Watt, 0, 0, 0 },
 		{ String_1C5F, 0, 0, 0 },
 		{ String_WakeMP, 0, 0, 0 },
 		{ String_Font, 0, 0, 0 },
 		{ String_Temp, 0, 0, 0 },
 		{ String_PPwr, 0, 0, 0 },
+		{ String_Led, 0, 0, 0 },
 		{ String_PwrBar, 0, 0, 0 },
-		{ String_Clicks, &ClicksMenu, 0, MACTION_SUBMENU },
 		{ String_Back, 0, EVENT_PARENT_MENU, 0 }
 	}
 };
@@ -2437,11 +2447,11 @@ const menu_t VapingMenu =
 	VapingMenuOnEvent+1,
 	10,
 	{
+		{ String_w2cru, 0, 0, 0 },
 		{ String_Prot, 0, 0, 0 },
 		{ String_Tstep, 0, 0, 0 },
 		{ String_LoTemp, 0, 0, 0 },
 		{ String_HiTemp, 0, 0, 0 },
-		{ String_w2cru, 0, 0, 0 },
 		{ String_ecolvl, 0, 0, 0 },
 		{ String_Algo, &AlgoMenu, 0, MACTION_SUBMENU },
 		{ String_Modes, &ModesMenu, 0, MACTION_SUBMENU },
