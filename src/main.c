@@ -930,7 +930,7 @@ __myevic__ void Main()
 		while ( gFlags.playing_fb )
 		{
 			// Flappy Bird game loop
-			fbCallTimeouts();
+			// fbCallTimeouts();
 			if ( gFlags.tick_100hz )
 			{
 				// 100Hz

@@ -117,7 +117,7 @@ __myevic__ void TMR2_IRQHandler()
 			  || (!(TMR2Counter % 13) && dfFBSpeed == 1)
 			  || (!(TMR2Counter % 10) && dfFBSpeed == 2) )
 			{
-				fbTickTimeouts();
+				// fbTickTimeouts(); flappy bird. Removed for ROM
 			}
 		}
 	}

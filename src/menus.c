@@ -1325,9 +1325,9 @@ __myevic__ void GameISelect()
 
 __myevic__ void GameIClick()
 {
-	fbStartGame();
+	// fbStartGame(); Flappy Bird Game loop, removed to save ROM
 }
-
+ 
 //-----------------------------------------------------------------------------
 
 __myevic__ void ModesMEnter()

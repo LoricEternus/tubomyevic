@@ -45,12 +45,12 @@ MYEVIC_OBJS := src/myevic.o \
 	src/meusbd.o \
 	src/vcom.o \
 	src/storage.o \
-	src/flappy.o \
 	src/fbdata.o \
 	src/fonts.o \
 	src/display.o \
 	src/SSD1306.o \
-	src/SSD1327.o
+	src/SSD1327.o \
+#   src/flappy.o \
 
 AEABI_OBJS := src/aeabi/aeabi_memset-thumb2.o \
 	src/aeabi/aeabi_memclr.o
@@ -153,7 +153,8 @@ LIBDIRS := -L$(ARMGCC)/arm-none-eabi/lib \
 	-L$(ARMGCC)/arm-none-eabi/newlib \
 	-L$(ARMGCC)/lib/arm-none-eabi/newlib \
 	-L$(ARMGCC)/gcc/arm-none-eabi/$(GCC_VERSION) \
-	-L$(ARMGCC)/lib/gcc/arm-none-eabi/$(GCC_VERSION)
+	-L$(ARMGCC)/lib/gcc/arm-none-eabi/$(GCC_VERSION) \
+	-L$(ARMGCC)/arm-none-eabi/newlib/arm
 
 CFLAGS += -Wall -mcpu=$(CPU) -mfpu=$(FPU) -mthumb -Os -fdata-sections -ffunction-sections -std=c99
 CFLAGS += -fno-builtin-printf

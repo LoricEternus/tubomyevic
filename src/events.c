@@ -622,7 +622,7 @@ __myevic__ void GetUserInput()
 				{
 					gFlags.playing_fb = 0;
 					Event = 0;
-					fbInitTimeouts();
+					// fbInitTimeouts(); Flappy Bird init, removed to save ROM
 					MainView();
 				}
 			}
