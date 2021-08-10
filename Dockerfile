@@ -6,18 +6,20 @@
 #
 # Set git branch as master
 # docker build --build-arg branch=master .
-#-----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Usage
 # docker run --rm -dti --name=evic -v {local_code_path}:/tubomyevic {image_id}
 # ----------------------------------------------------------------------------
 # Build image and output to {local_code_path}/bin
-# docker exec -it evic bash -c "cd tubomyevic; make"
+# docker exec -it evic bash -c "/build.sh"
 FROM debian
+WORKDIR /opt
 
 ARG repo
 ARG branch
 ENV repo=${repo:-https://github.com/Slikrick/tubomyevic.git}
 ENV branch=${branch:-master}
+ENV EVICSDK=/opt
 
 # Install all required packages
 RUN apt-get update
@@ -31,17 +33,23 @@ RUN git clone https://github.com/Ban3/python-evic
 RUN cd python-evic; python3 setup.py install
 
 # Clone and link OpenNuvoton library repo
-RUN git clone https://github.com/OpenNuvoton/M451BSP
-RUN mkdir nuvoton-sdk
-RUN ln -s /M451BSP/Library /nuvoton-sdk
+RUN git clone https://github.com/OpenNuvoton/M451BSP nuvoton-sdk
 
 # Clone tubomyevic repo
 RUN echo $repo
 RUN git clone -b ${branch} ${repo}
-RUN cd /tubomyevic; make
+
+# Create custom commands to ease docker exec calls
+RUN echo 'cd ./tubomyevic; make' > ./build.sh
+RUN chmod +x ./build.sh
+RUN ./build.sh
+
+RUN echo 'cd ./tubomyevic; make clean' > ./clean.sh
+RUN chmod +x ./clean.sh
+RUN ./clean.sh
 
 # Install the evic-sdk for reference
 RUN git clone https://github.com/ReservedField/evic-sdk.git
 
 # Mounted volumes
-VOLUME /tubomyevic
+VOLUME /opt/tubomyevic
