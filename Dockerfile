@@ -1,11 +1,23 @@
 # CLI Usage 
 # ----------------------------------------------------------------------------
-# docker build --build-arg='repo=https://github.com/Slickrick/tubomyevic.git' .
-# docker run --rm -ti --name=evic -v {local_code_path}:/tubomyevic {image_id}
+# Deployment
+# Configure custom git repo
+# docker build --build-arg repo=https://github.com/Slikrick/tubomyevic.git .
+#
+# Set git branch as master
+# docker build --build-arg branch=master .
+#-----------------------------------------------------------------------------
+# Usage
+# docker run --rm -dti --name=evic -v {local_code_path}:/tubomyevic {image_id}
 # ----------------------------------------------------------------------------
+# Build image and output to {local_code_path}/bin
+# docker exec -it evic bash -c "cd tubomyevic; make"
 FROM debian
 
 ARG repo
+ARG branch
+ENV repo=${repo:-https://github.com/Slikrick/tubomyevic.git}
+ENV branch=${branch:-master}
 
 # Install all required packages
 RUN apt-get update
@@ -25,7 +37,7 @@ RUN ln -s /M451BSP/Library /nuvoton-sdk
 
 # Clone tubomyevic repo
 RUN echo $repo
-RUN git clone ${repo}
+RUN git clone -b ${branch} ${repo}
 RUN cd /tubomyevic; make
 
 # Install the evic-sdk for reference
