@@ -2,17 +2,19 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ master ]
+    branches: 
+      - linkerfix
   pull_request:
-    branches: [ master ]
+    branches: 
+      - linkerfix
 
 jobs:
 
   build:
 
-    runs-on: debian-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file Dockerfile --tag evic:$(date +%s) --build-arg repo=${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}.git --build-arg branch=linkerfix
