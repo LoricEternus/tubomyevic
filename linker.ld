@@ -5,12 +5,7 @@ MEMORY {
 }
 
 /* Library configurations */
-GROUP(
-	v7e-m/nofp/libnosys.a
-	v7e-m/nofp/libgcc.a
-	v7e-m/nofp/libc.a
-	v7e-m/nofp/libm.a
-)
+GROUP(-lgcc -lc -lm)
 
 ENTRY(Reset_Handler)
 
