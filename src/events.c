@@ -1403,7 +1403,7 @@ __myevic__ int CustomEvents()
 			break;
 
 		case EVENT_CRUISE:
-					if (dfMode == 4 && dfPower > 200) dfPower = 200;
+					if (dfMode == 4 && dfPower > 400) dfPower = 400;
 					if (dfMode==3 || dfMode==4 ) {
 					AutoPuffTimer=dfProtec*500ul;
 					Event = EVENT_AUTO_PUFF;
