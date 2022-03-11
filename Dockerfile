@@ -23,7 +23,7 @@ ENV EVICSDK=/opt
 
 # Install all required packages
 RUN apt-get update
-RUN apt-get install -y git gcc-arm-none-eabi libnewlib-arm-none-eabi gcc make python3 python3-setuptools python3-dev libhidapi-dev python3-hidapi python3-hid wget bash-completion procps vim
+RUN apt-get install -y git gcc-arm-none-eabi libnewlib-arm-none-eabi gcc make python3 python3-pip python3-setuptools python3-dev libhidapi-dev python3-hidapi python3-hid wget bash-completion procps vim
 
 # Set up the environment to be a bit more friendly
 RUN echo '/etc/bash_completion' > /root/.bash_profile
