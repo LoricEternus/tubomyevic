@@ -8,10 +8,10 @@
 # docker build --build-arg branch=master .
 # ----------------------------------------------------------------------------
 # Usage
-# docker run --rm -dti --name=evic -v {local_code_path}:/tubomyevic {image_id}
+# docker run --rm -dti --name=evic -v {local_code_path}:/opt/tubomyevic {image_id}
 # ----------------------------------------------------------------------------
 # Build image and output to {local_code_path}/bin
-# docker exec -it evic bash -c "/build.sh"
+# docker exec -it evic bash -c "./build.sh"
 FROM debian
 WORKDIR /opt
 
@@ -52,4 +52,4 @@ RUN ./clean.sh
 RUN git clone https://github.com/ReservedField/evic-sdk.git
 
 # Mounted volumes
-VOLUME /opt/tubomyevic
+VOLUME ["/opt/tubomyevic"]
